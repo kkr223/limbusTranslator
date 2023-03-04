@@ -1,0 +1,68 @@
+{
+  "build": {
+    "beforeDevCommand": "yarn dev",
+    "beforeBuildCommand": "yarn build",
+    "devPath": "http://localhost:1420",
+    "distDir": "../dist",
+    "withGlobalTauri": true
+  },
+  "package": {
+    "productName": "LimbusTranslator",
+    "version": "0.0.1"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "fs": {
+        "all": true,
+        "scope": [
+          "*",
+          "$DOCUMENT/*",
+          "$DOCUMENT/LimbusTranslator",
+          "$DOCUMENT/LimbusTranslator/*",
+          "$DOCUMENT/LimbusTranslator/cache",
+          "$DOCUMENT/LimbusTranslator/cache/*",
+          "$DOCUMENT/LimbusTranslator/output",
+          "$DOCUMENT/LimbusTranslator/output/*"
+        ]
+      },
+      "shell": {
+        "all": false,
+        "open": true
+      },
+      "dialog": {
+        "all": true
+      },
+      "path": {
+        "all": true
+      }
+    },
+    "bundle": {
+      "active": true,
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "identifier": "com.kkr223.limbusTrans",
+      "targets": "all"
+    },
+    "security": {
+      "csp": null
+    },
+    "updater": {
+      "active": false
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": false,
+        "title": "Limbus Translator",
+        "width": 1280,
+        "height": 720
+      }
+    ]
+  }
+}
