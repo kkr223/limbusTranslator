@@ -7,7 +7,7 @@
     </div>
     <div class="content">
         <el-scrollbar max-height="95vh">
-            <FileItem v-for="v,k in fileData" :name="v.name" :clicked="v.clicked" :key="v" @click="fiClick(k)"></FileItem>
+            <FileItem v-for="v,k in fileData" :name="k" :clicked="v.clicked" :key="v" @click="fiClick(k)"></FileItem>
         </el-scrollbar>
     </div>
     </div>
@@ -24,60 +24,40 @@ import {cachePath} from '../utils/paths'
 
 <script setup>
 import FileItem from './FileItem.vue'
+
 const fileData = ref({})
 onMounted(()=>{
-    fs.readDir(cachePath).then(fes=>{
-        fes.forEach(fe=>{
-            if(fe.children==undefined){
-                if(fe.path.endsWith('.trs')){
-                    createData(fe.path,true)
-                }else if(fe.path.endsWith('.trt')){
-                    createDataTarget(fe.path)
+    fs.exists(cachePath).then(ex=>{
+        fs.readDir(cachePath).then(fes=>{
+            fes.forEach(fe=>{
+                if(fe.children==undefined){
+                    if(fe.path.endsWith('.trs')){
+                        createData(fe.path,true)
+                    }
                 }
-            }
+            })
         })
     })
 })
 const createData = async (_path,from_cache=false)=>{
     if(await fs.exists(_path)){
-        const txt = await fs.readTextFile(_path)
-        var js = undefined
-        try {
-            js = JSON.parse(txt)
-        } catch (error) {
-            js = undefined
+        var fname=''
+        if(from_cache){
+            fname = _path.split('\\').pop().replace('.trs','',1)
+        }else{
+            fname = _path.split('\\').pop().replace('.json','',1)
         }
-        if(js!==undefined){
-            var fname = ''
-            if(from_cache){
-                fname = _path.split('\\').pop().replace('.trs','',1)
-            }else{
-                fname = _path.split('\\').pop().replace('.json','',1)
-            }
+        if(!from_cache){
+            await fs.copyFile(_path,await path.join(cachePath,fname+'.trs'))
             fileData.value[fname]={
-                name:fname,
-                source:js,
-                clicked:false
+                clicked:false,
+                path:await path.join(cachePath,fname+'.trs')
             }
-            if(!from_cache){
-                await fs.copyFile(_path,await path.join(cachePath,fname+'.trs'))
+        }else{
+            fileData.value[fname]={
+                clicked:false,
+                path:_path
             }
-            
-        }
-    }
-}
-const createDataTarget=async (_path)=>{
-    if(await fs.exists(_path)){
-        const txt = await fs.readTextFile(_path)
-        var js = undefined
-        try {
-            js = JSON.parse(txt)
-        } catch (error) {
-            js = undefined
-        }
-        if(js!==undefined){
-            const fname = _path.split('\\').pop().replace('.trt','',1)
-            fileData.value[fname].target=js            
         }
     }
 }
@@ -95,20 +75,10 @@ const openFile=async ()=>{
         }
         fileData.value={}
         if(f instanceof Array){
-            var c = 0
             for(let file of f){
                 await createData(file)
-                c+=1
-                if(c>400){
-                    ElMessage({
-                        message:"所选文件过多，只加载前400个文件",
-                        type:"warning"
-                    })
-                    break
-                }
             }
         }else if(f instanceof String){
-            readCount = 1
             await createData(f)
         }
     }
@@ -121,8 +91,8 @@ const fiClick=(k)=>{
         }else{
             fileData.value[i].clicked=false
         }
-    }
-    bus.emit('click-file-item',fileData.value[k])
+    }    
+    bus.emit('click-file-item',{name:k,path:fileData.value[k].path})
     fileData.value[k].clicked=true
 }
 </script>
