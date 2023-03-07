@@ -13,9 +13,32 @@ const store = reactive({
     source:{},
     target:{},
     config:{
-        TransItem:{}
+        TransItem:{},
+        Reference:{
+            model:{
+            open:true,
+            reference:['CN_NickName','name','krname']
+        }}
     }
 });
+export function init(){
+    _store={
+        source:{},
+        target:{},
+        config:{}
+    }
+    store.name=''
+    store.source={},
+    store.target={},
+    store.config={
+        TransItem:{},
+        Reference:{
+            model:{
+            open:true,
+            reference:['CN_NickName','name','krname']
+        }}
+    }
+}
 export function setSource(name,value){
     for(let i in value){
         _store.source[name][i]=value[i]
@@ -58,7 +81,12 @@ export async function useStore(name){
     }
     if(!(name in _store.config)){
         _store.config[name]={
-            TransItem:{}
+            TransItem:{},
+            Reference:{
+                model:{
+                open:true,
+                reference:['CN_NickName','name','krname']
+            }}
         }
     }
     // 切换库

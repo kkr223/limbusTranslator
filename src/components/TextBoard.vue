@@ -14,7 +14,7 @@ import bus from '../utils/bus';
 import { fs, path } from '@tauri-apps/api';
 import { cachePath } from '../utils/paths';
 import { setTarget,useStore,setSource,setConfig } from '../utils/store';
-import { pathTrans } from '../utils/tool'
+import { pathTrans,loadSource } from '../utils/tool'
 import TextItem from './TextItem.vue';
 
 const jsonPath=ref([])
@@ -30,17 +30,6 @@ const listLoad=()=>{
     }
 }
 
-const loadSource=(item)=>{
-    for(let i in item){
-        if(item[i] instanceof Array){
-            jsonPath.value.push(i)
-            break
-        }else if(item[i] instanceof Object){
-            jsonPath.value.push(i)
-            return loadSource(item[i])
-        }
-    }
-}
 // 响应click-file-item事件
 bus.on('click-file-item',async (info)=>{
     // info: {name,path}
@@ -59,7 +48,7 @@ bus.on('click-file-item',async (info)=>{
         const fd = await fs.readTextFile(info.path)
         const data = JSON.parse(fd)
         setSource(info.name,data)
-        loadSource(data)
+        jsonPath.value=loadSource(jsonPath.value,data)
         // 无限滚动
         const p = pathTrans(jsonPath.value)
         len = eval("data"+`${p}`).length
@@ -77,7 +66,7 @@ bus.on('click-file-item',async (info)=>{
     }
     name.value=info.name
     nextTick(()=>{
-        bus.emit('confog-loaded')
+        bus.emit('config-loaded')
         isClick.value=true
     })
 })

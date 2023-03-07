@@ -21,6 +21,7 @@ import { fs } from '@tauri-apps/api';
 import { onMounted, ref } from 'vue';
 import bus from '../utils/bus';
 import {cachePath} from '../utils/paths'
+import {init} from '../utils/store'
 
 const fileData = ref({})
 onMounted(async ()=>{
@@ -78,6 +79,7 @@ const openFile=async ()=>{
             await fs.createDir(cachePath)
         }
         fileData.value={}
+        init()
         if(f instanceof Array){
             for(let file of f){
                 await createData(file)
