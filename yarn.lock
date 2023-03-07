@@ -790,6 +790,11 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
+scrollparent@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/scrollparent/-/scrollparent-2.0.1.tgz#715d5b9cc57760fb22bdccc3befb5bfe06b1a317"
+  integrity sha512-HSdN78VMvFCSGCkh0oYX/tY4R3P1DW61f8+TeZZ4j2VLgfwvw0bpRSOv4PCVKisktIwbzHCfZsx+rLbbDBqIBA==
+
 scule@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmmirror.com/scule/-/scule-1.0.0.tgz#895e6f4ba887e78d8b9b4111e23ae84fef82376d"
@@ -905,6 +910,25 @@ vue-demi@*:
   version "0.13.11"
   resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.13.11.tgz#7d90369bdae8974d87b1973564ad390182410d99"
   integrity sha512-IR8HoEEGM65YY3ZJYAjMlKygDQn25D5ajNFNoKh9RSDMQtlzCxtfQjdQgv9jjK+m3377SsJXY8ysq8kLCZL25A==
+
+vue-observe-visibility@^0.4.4:
+  version "0.4.6"
+  resolved "https://registry.npmmirror.com/vue-observe-visibility/-/vue-observe-visibility-0.4.6.tgz#878cb8ebcf3078e40807af29774e97105ebd519e"
+  integrity sha512-xo0CEVdkjSjhJoDdLSvoZoQrw/H2BlzB5jrCBKGZNXN2zdZgMuZ9BKrxXDjNP2AxlcCoKc8OahI3F3r3JGLv2Q==
+
+vue-resize@^0.4.5:
+  version "0.4.5"
+  resolved "https://registry.npmmirror.com/vue-resize/-/vue-resize-0.4.5.tgz#4777a23042e3c05620d9cbda01c0b3cc5e32dcea"
+  integrity sha512-bhP7MlgJQ8TIkZJXAfDf78uJO+mEI3CaLABLjv0WNzr4CcGRGPIAItyWYnP6LsPA4Oq0WE+suidNs6dgpO4RHg==
+
+vue-virtual-scroller@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.npmmirror.com/vue-virtual-scroller/-/vue-virtual-scroller-1.1.2.tgz#b8a6362f177abf3f2149ce1eac18013c71fe353b"
+  integrity sha512-SkUyc7QHCJFB5h1Fya7LxVizlVzOZZuFVipBGHYoTK8dwLs08bIz/tclvRApYhksaJIm/nn51inzO2UjpGJPMQ==
+  dependencies:
+    scrollparent "^2.0.1"
+    vue-observe-visibility "^0.4.4"
+    vue-resize "^0.4.5"
 
 vue@^3.2.45:
   version "3.2.47"

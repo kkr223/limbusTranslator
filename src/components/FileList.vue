@@ -26,17 +26,21 @@ import {cachePath} from '../utils/paths'
 import FileItem from './FileItem.vue'
 
 const fileData = ref({})
-onMounted(()=>{
-    fs.exists(cachePath).then(ex=>{
-        fs.readDir(cachePath).then(fes=>{
-            fes.forEach(fe=>{
-                if(fe.children==undefined){
-                    if(fe.path.endsWith('.trs')){
-                        createData(fe.path,true)
-                    }
-                }
-            })
-        })
+onMounted(async ()=>{
+    // 软件启动后初始化
+    const ex =await fs.exists(cachePath)
+    if(!ex)
+    {
+        await fs.createDir(cachePath)
+    }
+    // 读取缓存文件列表，不直接读取
+    const fes = await fs.readDir(cachePath)
+    fes.forEach(fe=>{
+        if(fe.children==undefined){
+            if(fe.path.endsWith('.trs')){
+                createData(fe.path,true)
+            }
+        }
     })
 })
 const createData = async (_path,from_cache=false)=>{
@@ -48,12 +52,14 @@ const createData = async (_path,from_cache=false)=>{
             fname = _path.split('\\').pop().replace('.json','',1)
         }
         if(!from_cache){
+            // 如果是来自打开文件，就复制到缓存文件夹
             await fs.copyFile(_path,await path.join(cachePath,fname+'.trs'))
             fileData.value[fname]={
                 clicked:false,
                 path:await path.join(cachePath,fname+'.trs')
             }
         }else{
+            // clicked:是否点击选中，path:文件路径
             fileData.value[fname]={
                 clicked:false,
                 path:_path
@@ -61,6 +67,7 @@ const createData = async (_path,from_cache=false)=>{
         }
     }
 }
+// 点击 打开文件
 const openFile=async ()=>{
     const f = await dialog.open({
     multiple:true,
@@ -82,16 +89,16 @@ const openFile=async ()=>{
             await createData(f)
         }
     }
-    
 }
 const fiClick=(k)=>{
+    // 点击文件项，触发click-file-item事件
     for(let i in fileData.value){
         if(i==k){
             fileData.value[k].clicked=true
         }else{
             fileData.value[i].clicked=false
         }
-    }    
+    }
     bus.emit('click-file-item',{name:k,path:fileData.value[k].path})
     fileData.value[k].clicked=true
 }

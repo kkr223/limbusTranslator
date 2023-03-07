@@ -3,17 +3,17 @@
         <div class="tans-data" >
             <el-form :model="txtSource" label-width="120px" label-position="top">
                 <div v-for="txt,k in txtSource">
-                <el-form-item>
+                    <el-form-item  v-if="store.config.TransItem[k]<2">
                     <el-divider  content-position="left">{{ k }}:</el-divider>
-                <el-row style="width: 100%;">
-                    <el-col :span="12">
-                        <p>{{ txtSource[k] }}</p>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-input v-model="txtTarget[k]" type="textarea"/>
-                    </el-col>
-                </el-row>
-                </el-form-item>
+                    <el-row style="width: 100%;">
+                        <el-col :span="12">
+                            <p>{{ txtSource[k] }}</p>
+                        </el-col>
+                        <el-col :span="12" v-if="store.config.TransItem[k]==0">
+                            <el-input v-model="txtTarget[k]" type="textarea"/>
+                        </el-col>
+                    </el-row>
+                    </el-form-item>
                 </div>
             </el-form>
         </div>
@@ -21,11 +21,11 @@
 </template>
 
 <script setup>
-import { onMounted,ref } from 'vue';
+import { onMounted,ref, watch } from 'vue';
 import store from '../utils/store';
 import { pathTrans } from '../utils/tool';
 
-const props = defineProps(['jsph'])
+const props = defineProps(['jsph','name'])
 
 const txtSource = ref({})
 const txtTarget = ref({})
@@ -44,12 +44,31 @@ const checkTarget=(obj,arr)=>{
 onMounted(()=>{
     ph.value=pathTrans(props.jsph)
     txtSource.value=eval("store.source"+`${ph.value}`)
+    for(let i in txtSource.value){
+        if(!(i in store.config.TransItem)){
+            store.config.TransItem[i]=0
+        }
+    }
     if(checkTarget(store.target,[...props.jsph])){
-        if(props.jsph[1] in store.target[props.jsph[0]]){
-            txtTarget.value=eval("store.target"+`${ph.value}`)
+        var t = eval("store.target"+`${ph.value}`)
+        for(let i in t){
+            if(txtSource.value[i]!==t[i]){
+                txtTarget.value[i]=t[i]
+            }
         }
     }else{
-        store.target[props.jsph[0]]={}
+        store.target=JSON.parse(JSON.stringify(store.source))
+        for(let i in t){
+            if(txtSource.value[i]!==t[i]){
+                txtTarget.value[i]=t[i]
+            }
+        }
+    }
+})
+watch(txtTarget.value,(n)=>{
+    for(let i in n){
+        var t = eval("store.target"+`${ph.value}`)
+        t[i]=n[i]
     }
 })
 </script>
