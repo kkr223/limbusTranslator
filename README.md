@@ -1,4 +1,4 @@
-# 边狱巴士翻译器（翻译者用）v0.1.0
+# 边狱巴士翻译器（翻译者用）v0.1.1
 
 需要WebView2环境，win11默认安装了，可以直接运行。
 winxp不支持，32位系统没有试过，win7/10没有WebView2的话去[这里](https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/consumer/)安装，很快就能装好，装好就能用。
