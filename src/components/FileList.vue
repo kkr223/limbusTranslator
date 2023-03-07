@@ -14,16 +14,13 @@
 
 </template>
 
-<script>
+<script setup>
+import FileItem from './FileItem.vue'
 import { dialog, path } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
 import { onMounted, ref } from 'vue';
 import bus from '../utils/bus';
 import {cachePath} from '../utils/paths'
-</script>
-
-<script setup>
-import FileItem from './FileItem.vue'
 
 const fileData = ref({})
 onMounted(async ()=>{

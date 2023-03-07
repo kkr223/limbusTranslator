@@ -8,16 +8,13 @@
 </div>
 </template>
 
-<script>
+<script setup>
 import { nextTick, ref } from 'vue';
 import bus from '../utils/bus';
 import { fs, path } from '@tauri-apps/api';
 import { cachePath } from '../utils/paths';
 import { setTarget,useStore,setSource,setConfig } from '../utils/store';
 import { pathTrans } from '../utils/tool'
-</script>
-
-<script setup>
 import TextItem from './TextItem.vue';
 
 const jsonPath=ref([])
@@ -80,6 +77,7 @@ bus.on('click-file-item',async (info)=>{
     }
     name.value=info.name
     nextTick(()=>{
+        bus.emit('confog-loaded')
         isClick.value=true
     })
 })
@@ -98,9 +96,11 @@ ul li{
 
 <style scoped>
 .t-box{
-    width: 98%;
+    width: 95%;
     height: 95vh;
     margin-top: 5vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
     border-left: 1px solid rgb(185, 182, 160);
     border-right: 1px solid rgb(185, 182, 160);
 }

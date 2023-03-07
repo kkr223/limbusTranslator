@@ -13,12 +13,9 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { reactive } from 'vue';
 import store from '../../utils/store'
-</script>
-
-<script setup>
 const showMarks = reactive({
     0:'全部显示',
     1:'只显示源文本',

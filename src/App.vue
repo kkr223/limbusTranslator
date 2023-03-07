@@ -13,12 +13,9 @@
 </el-row>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
 import 'element-plus/theme-chalk/dark/css-vars.css'
-</script>
-
-<script setup>
 import FileList from './components/FileList.vue'
 import TextBoard from './components/TextBoard.vue'
 import ConfigBoard from './components/ConfigBoard.vue';
