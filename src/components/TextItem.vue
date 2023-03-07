@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { onMounted,ref, watch } from 'vue';
+import { onMounted,ref, watch,reactive } from 'vue';
 import store from '../utils/store';
 import { loadSource, pathTrans } from '../utils/tool';
 import { fs, path } from '@tauri-apps/api';
@@ -32,7 +32,7 @@ import { cachePath } from '../utils/paths';
 const props = defineProps(['jsph','name'])
 
 const txtSource = ref({})
-const txtTarget = ref({})
+const txtTarget = reactive({})
 const ph = ref({})
 const refText=ref({})
 const checkTarget=(obj,arr)=>{
@@ -58,14 +58,14 @@ onMounted(async ()=>{
         var t = eval("store.target"+`${ph.value}`)
         for(let i in t){
             if(txtSource.value[i]!==t[i]){
-                txtTarget.value[i]=t[i]
+                txtTarget[i]=t[i]
             }
         }
     }else{
         store.target=JSON.parse(JSON.stringify(store.source))
         for(let i in t){
             if(txtSource.value[i]!==t[i]){
-                txtTarget.value[i]=t[i]
+                txtTarget[i]=t[i]
             }
         }
     }

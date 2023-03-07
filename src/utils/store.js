@@ -94,6 +94,12 @@ export async function useStore(name){
     store.target=_store.target[name]
     store.config=_store.config[name]
     store.name=name
+    if(!(await fs.exists(await path.join(cachePath,store.name+'.trt')))){
+        await fs.writeTextFile(await path.join(cachePath,store.name+'.trt'),JSON.stringify(store.source))
+    }
+    if(!(await fs.exists(await path.join(cachePath,store.name+'.trc')))){
+        await fs.writeTextFile(await path.join(cachePath,store.name+'.trc'),JSON.stringify(store.config))
+    }
     return store
 }
 export default store;
