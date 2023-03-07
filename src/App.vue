@@ -14,7 +14,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import 'element-plus/theme-chalk/dark/css-vars.css'
 import FileList from './components/FileList.vue'
 import TextBoard from './components/TextBoard.vue'

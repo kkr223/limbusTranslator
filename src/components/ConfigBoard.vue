@@ -41,7 +41,7 @@ bus.on('config-loaded',()=>{
     })
 })
 const save=()=>{
-    const trans = JSON.stringify(store.target)
+    const trans = JSON.stringify(store.target,null,2)
     path.join(outputPath,store.name+'.json').then(_path=>{
         fs.writeTextFile(_path,trans).then(()=>{
             ElMessage({
