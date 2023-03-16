@@ -1,14 +1,16 @@
 <template>
     <div class="cti-box">
         <el-scrollbar max-height="80vh">
-        <el-row v-for="v,k in store.config.TransItem" class="cti">
-            <el-col :span="6">
-                {{ k }}
-            </el-col>
-            <el-col :span="18" class="cti-sel">
-                <el-slider v-model="store.config.TransItem[k]" :step="1" show-stops :marks="showMarks" :max="2"/>
-            </el-col>
-        </el-row>
+            <div v-for="v,k in store.config.TransItem">
+                <el-row v-if="k!='id'"  class="cti">
+                    <el-col :span="6">
+                        {{ k }}
+                    </el-col>
+                    <el-col :span="18" class="cti-sel">
+                        <el-slider v-model="store.config.TransItem[k]" :step="1" show-stops :marks="showMarks" :max="2"/>
+                    </el-col>
+                </el-row>
+            </div>
         </el-scrollbar>
     </div>
 </template>

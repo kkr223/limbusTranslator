@@ -3,7 +3,8 @@
         <div class="tans-data" >
             <el-form :model="txtSource" label-width="120px" label-position="top">
                 <div v-for="txt,k in txtSource">
-                    <el-form-item  v-if="store.config.TransItem[k]<2">
+                    <el-tag size="large" type="success" v-if="k=='id'">ID&nbsp;:&nbsp;&nbsp;{{ txtSource[k] }}</el-tag>
+                    <el-form-item  v-else-if="store.config.TransItem[k]<2">
                     <el-divider  content-position="left">{{ k }}:</el-divider>
                     <el-row style="width: 100%;">
                         <el-col :span="12">
@@ -26,49 +27,37 @@
 <script setup>
 import { onMounted,ref, watch,reactive } from 'vue';
 import store from '../utils/store';
-import { loadSource, pathTrans } from '../utils/tool';
+import { findArrayWithPath } from '../utils/tool';
 import { fs, path } from '@tauri-apps/api';
 import { cachePath } from '../utils/paths';
-const props = defineProps(['jsph','name'])
+import _ from 'lodash'
 
+const props = defineProps(['jsph','name'])
 const txtSource = ref({})
 const txtTarget = reactive({})
-const ph = ref({})
 const refText=ref({})
-const checkTarget=(obj,arr)=>{
-    if(arr.length==0){
-        return true
-    }
-    const item = arr.shift()
-    if(item in obj){
-        return checkTarget(obj[item],arr)
-    }else{
-        return false
-    }
-}
+
 onMounted(async ()=>{
-    ph.value=pathTrans(props.jsph)
-    txtSource.value=eval("store.source"+`${ph.value}`)
-    for(let i in txtSource.value){
-        if(!(i in store.config.TransItem)){
-            store.config.TransItem[i]=0
-        }
-    }
-    if(checkTarget(store.target,[...props.jsph])){
-        var t = eval("store.target"+`${ph.value}`)
-        for(let i in t){
-            if(txtSource.value[i]!==t[i]){
-                txtTarget[i]=t[i]
-            }
-        }
-    }else{
+    txtSource.value= _.get(store.source,props.jsph)
+    // config翻译项显示
+    const keys = _.uniq(_.keys(txtSource.value))
+    const diff = _.difference(keys, _.keys(store.config.TransItem));
+    _.forEach(diff,key=>{
+        store.config.TransItem[key]=0
+    })
+    // 检测相关target是否存在
+    var tt = _.get(store.target,props.jsph)
+    if(tt==undefined){
         store.target=JSON.parse(JSON.stringify(store.source))
-        for(let i in t){
-            if(txtSource.value[i]!==t[i]){
-                txtTarget[i]=t[i]
-            }
+        tt = _.get(store.target,props.jsph)
+    }
+    for(let i in tt){
+        // source与target不同时显示target，否则留空
+        if(txtSource.value[i]!==tt[i]){
+            txtTarget[i]=tt[i]
         }
     }
+    // 外键映射
     if(Object.keys(store.config.Reference).length>0){
         var cache={}
         for(let i in store.config.Reference){
@@ -85,10 +74,8 @@ onMounted(async ()=>{
                     }
                     const fd = await fs.readTextFile(_path)
                     const data = JSON.parse(fd)
-                    var pl = []
-                    pl=loadSource(pl,data)
-                    const rfPath=pathTrans(pl)
-                    rfData=eval('data'+`${rfPath}`)
+                    const rfPath=findArrayWithPath(data)
+                    rfData=_.get(data,rfPath)
                     cache[rf[0]]=rfData
                 }
                 refText.value[i]={}
@@ -103,7 +90,7 @@ onMounted(async ()=>{
 })
 watch(txtTarget,(n)=>{
     for(let i in n){
-        var t = eval("store.target"+`${ph.value}`)
+        var t = _.get(store.target,props.jsph)
         t[i]=n[i]
     }
 })

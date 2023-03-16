@@ -2,7 +2,7 @@
 <div class="t-box">
     <ul v-infinite-scroll="listLoad" class="t-ul" v-if="isClick">
         <li v-for="idx in Array.from({length: loadLen}, (x, i) => i)" :key="idx">
-            <TextItem :jsph="[...jsonPath,idx]" :name="name"></TextItem>
+            <TextItem :jsph="jsonPath+`[${idx}]`" :name="name"></TextItem>
         </li>
     </ul>
 </div>
@@ -14,7 +14,8 @@ import bus from '../utils/bus';
 import { fs, path } from '@tauri-apps/api';
 import { cachePath } from '../utils/paths';
 import { setTarget,useStore,setSource,setConfig } from '../utils/store';
-import { pathTrans,loadSource } from '../utils/tool'
+import { findArrayWithPath } from '../utils/tool';
+import _ from 'lodash'
 import TextItem from './TextItem.vue';
 
 const jsonPath=ref([])
@@ -48,10 +49,9 @@ bus.on('click-file-item',async (info)=>{
         const fd = await fs.readTextFile(info.path)
         const data = JSON.parse(fd)
         setSource(info.name,data)
-        jsonPath.value=loadSource(jsonPath.value,data)
+        jsonPath.value=findArrayWithPath(data)
         // 无限滚动
-        const p = pathTrans(jsonPath.value)
-        len = eval("data"+`${p}`).length
+        len = _.get(data,jsonPath.value).length
         if(len<6){
             loadLen.value=len
         }else{

@@ -1,22 +1,18 @@
-export function pathTrans(jsonPath){
-    var p = ""
-    for(let i of jsonPath){
-        if(typeof i == "string"){
-            p+="['"+i+"']"
-        }else if(typeof i == "number"){
-            p+="["+i.toString()+"]"
+import _ from 'lodash'
+export function findArrayWithPath(obj){
+    let path = '';
+    const result = _.find(obj, (value, key) => {
+      if (_.isArray(value)) {
+        path = key;
+        return true;
+      } else if (_.isObject(value)) {
+        const found = findArrayWithPath(value);
+        if (found) {
+          path = key + '.' + found;
+          return true;
         }
-    }
-    return p
-}
-export function loadSource(arr,item){
-    for(let i in item){
-        if(item[i] instanceof Array){
-            arr.push(i)
-            return arr
-        }else if(item[i] instanceof Object){
-            arr.push(i)
-            return loadSource(arr,item[i])
-        }
-    }
-}
+      }
+      return false;
+    });
+    return result ? path : null;
+};
